@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/employee_database</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">MSI2023w10</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="show_sql">true</property>
+        <property name="current_session_context_class">thread</property>
+        <property name="format_sql">true</property>
+        <mapping class="com.jiat.crud_application.entity.User"/>
+        <mapping class="com.jiat.crud_application.entity.Employee"/>
+    </session-factory>
+</hibernate-configuration>
