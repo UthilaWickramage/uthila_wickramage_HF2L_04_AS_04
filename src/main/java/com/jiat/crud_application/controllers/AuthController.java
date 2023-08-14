@@ -27,17 +27,17 @@ public class AuthController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response auth(@FormParam("name") String name,@FormParam("password") String password){
-     if(name.equals("Kamal") && password.equals("1234")){
+
          UserDetails userDetails = userService.getUserByName(name);
-         String token = jwtTokenUtil.generateAccessToken(userDetails);
-         String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
-         Date expireDateFromToken = jwtTokenUtil.getExpiredDateFromToken(token);
+         if(userDetails!=null) {
+             String token = jwtTokenUtil.generateAccessToken(userDetails);
+             String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
+             Date expireDateFromToken = jwtTokenUtil.getExpiredDateFromToken(token);
 
-         AuthResponseDTO dto = new AuthResponseDTO(token,refreshToken,expireDateFromToken.toString());
-         return Response.ok().entity(dto).build();
-
-     }else{
-         return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid Name or Password").build();
+             AuthResponseDTO dto = new AuthResponseDTO(token, refreshToken, expireDateFromToken.toString());
+             return Response.ok().entity(dto).build();
+         }else{
+             return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid Name or Password").build();
      }
  }
 
