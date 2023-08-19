@@ -1,7 +1,7 @@
 package com.jiat.crud_application.controllers;
 
 import com.jiat.crud_application.dto.AuthResponseDTO;
-import com.jiat.crud_application.model.UserDetails;
+import com.jiat.crud_application.entity.User;
 import com.jiat.crud_application.services.UserService;
 import com.jiat.crud_application.util.JWTTokenUtil;
 import jakarta.inject.Inject;
@@ -28,10 +28,10 @@ public class AuthController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response auth(@FormParam("name") String name,@FormParam("password") String password){
 
-         UserDetails userDetails = userService.getUserByName(name);
-         if(userDetails!=null) {
-             String token = jwtTokenUtil.generateAccessToken(userDetails);
-             String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
+    User user = userService.getUserByNameAndPassword(name,password);
+         if(user!=null) {
+             String token = jwtTokenUtil.generateAccessToken(user);
+             String refreshToken = jwtTokenUtil.generateRefreshToken(user);
              Date expireDateFromToken = jwtTokenUtil.getExpiredDateFromToken(token);
 
              AuthResponseDTO dto = new AuthResponseDTO(token, refreshToken, expireDateFromToken.toString());
@@ -45,11 +45,11 @@ public class AuthController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response refreshToken(@FormParam("refreshToken") String refreshToken){
-     UserDetails userDetails = userService.getUserByName(jwtTokenUtil.getNameFromToken(refreshToken));
-     if(!jwtTokenUtil.validateToken(refreshToken,userDetails)){
+     User user = userService.getUserByNameAndPassword(jwtTokenUtil.getNameFromToken(refreshToken), jwtTokenUtil.getPasswordFromToken(refreshToken));
+     if(!jwtTokenUtil.validateToken(refreshToken,user)){
          return Response.status(Response.Status.UNAUTHORIZED).entity("INVALID REFRESH TOKEN").build();
      }else{
-         String newAccessToken = jwtTokenUtil.generateAccessToken(userDetails);
+         String newAccessToken = jwtTokenUtil.generateAccessToken(user);
          Date expireDateFromNewAccessToken = jwtTokenUtil.getExpiredDateFromToken(newAccessToken);
          AuthResponseDTO dto = new AuthResponseDTO(newAccessToken,refreshToken,expireDateFromNewAccessToken.toString());
 

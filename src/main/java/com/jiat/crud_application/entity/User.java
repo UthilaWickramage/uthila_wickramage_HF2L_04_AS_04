@@ -3,6 +3,9 @@ package com.jiat.crud_application.entity;
 import jakarta.persistence.*;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "User.getUserByEmailAndPassword", query = "SELECT u FROM User u WHERE u.name=:name AND u.password=:password")
+})
 public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

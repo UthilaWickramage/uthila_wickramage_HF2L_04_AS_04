@@ -2,9 +2,13 @@ package com.jiat.crud_application.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Employee.getEmployeeById", query = "SELECT e FROM Employee e WHERE e.id=:id")
+})
 public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -21,7 +25,7 @@ public class Employee {
     private String department;
 
     @Column(name = "hire_date")
-    private String hire_date;
+    private LocalDate hire_date;
 
     @Column(name = "salary")
     private Double salary;
@@ -35,7 +39,7 @@ public class Employee {
 
     }
 
-    public Employee(int id, String name, String position, String department, String hire_date, Double salary) {
+    public Employee(int id, String name, String position, String department, LocalDate hire_date, Double salary) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -72,11 +76,11 @@ public class Employee {
         this.department = department;
     }
 
-    public String getHire_date() {
+    public LocalDate getHire_date() {
         return hire_date;
     }
 
-    public void setHire_date(String hire_date) {
+    public void setHire_date(LocalDate hire_date) {
         this.hire_date = hire_date;
     }
 

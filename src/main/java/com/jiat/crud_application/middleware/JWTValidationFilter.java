@@ -1,6 +1,6 @@
 package com.jiat.crud_application.middleware;
 
-import com.jiat.crud_application.model.UserDetails;
+import com.jiat.crud_application.entity.User;
 import com.jiat.crud_application.services.UserService;
 import com.jiat.crud_application.util.JWTTokenUtil;
 import io.fusionauth.jwt.JWTExpiredException;
@@ -26,7 +26,7 @@ public class JWTValidationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         String path = containerRequestContext.getUriInfo().getPath();
-        if (path.equals("auth")|| path.equals("refresh-token") || path.equals("home")) {
+        if (path.equals("auth")|| path.equals("refresh-token") || path.equals("search_employee") || path.equals("view_employee")) {
             return;
         }
 
@@ -35,8 +35,8 @@ public class JWTValidationFilter implements ContainerRequestFilter {
         } else {
             String tokenFromAuthorization = containerRequestContext.getHeaders().getFirst("Authorization").split(" ")[1];
             try {
-                UserDetails userDetails = userService.getUserByName(tokenUtil.getNameFromToken((tokenFromAuthorization)));
-                if (!tokenUtil.validateToken(tokenFromAuthorization, userDetails)) {
+                User user = userService.getUserByNameAndPassword(tokenUtil.getNameFromToken(tokenFromAuthorization),tokenUtil.getPasswordFromToken(tokenFromAuthorization));
+                if (!tokenUtil.validateToken(tokenFromAuthorization, user)) {
                     containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
                 }
             } catch (JWTExpiredException | NullPointerException ex) {
